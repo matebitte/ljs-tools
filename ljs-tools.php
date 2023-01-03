@@ -33,32 +33,43 @@ include "includes/ljs-comments.php";
 include "includes/ljs-post-types.php";
 include "includes/ljs-taxonomies.php";
 include "includes/ljs-roles.php";
+include "admin/ljs-settings.php";
 
 ///////////////////////////////////////////////
 
 /**
- * registering hooks
+ * registering various hooks
  */
-// disable comments
-add_action("wp_before__render", "ljs_remove_admin_bar_render");
-add_action("init", "ljs_remove_comment_support", 25);
-add_action("admin_menu", "ljs_remove_comments_admin_menus");
+if (get_option( 'ljs_deactivate_comments' ) == true) {
+    // disable comments
+    add_action("wp_before__render", "ljs_remove_admin_bar_render");
+    add_action("init", "ljs_remove_comment_support", 25);
+    add_action("admin_menu", "ljs_remove_comments_admin_menus");
+}
 
-// add ljp & beschlüsze
-add_action("init", "ljs_add_post_type_beschlusz", 0);
-add_action("init", "ljs_add_taxonomy_plenum", 1);
-add_action("init", "ljs_add_taxonomy_gremium", 1);
-add_action( "admin_menu", "ljs_change_tags_to_themen", 1);
+if (get_option( 'ljs_add_custom_post_type' ) == true) {
+    // add ljp & beschlüsze
+    add_action("init", "ljs_add_post_type_beschlusz", 0);
+    add_action("init", "ljs_add_taxonomy_plenum", 1);
+    add_action("init", "ljs_add_taxonomy_gremium", 1);
+    add_action( "admin_menu", "ljs_change_tags_to_themen", 1);
+}
 
 // add admin page for simple settings
-add_action('admin_menu', 'ljs_add_admin_submenu');
+add_action('admin_menu', 'ljs_add_admin_submenu'); // add admin menu
+add_action( 'admin_init', 'ljs_settings_init' ); // initialize settings
+
 
 ///////////////////////////////////////////////
+
 
 /**
  * The code that runs during plugin activation.
  */
 function activate_ljs_tools() {
+    // set default options
+    // set_option( 'ljs_deactivate_comments' ) == true
+
     // add ljp & beschlüsze
     ljs_add_post_type_beschlusz();
     ljs_add_taxonomy_plenum();
