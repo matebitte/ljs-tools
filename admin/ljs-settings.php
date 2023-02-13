@@ -10,34 +10,56 @@ function ljs_add_admin_submenu (){
     );
 }
 
-
+function ljs_plugin_settings_page() {
+    ?>
+    <div class="wrap">
+        <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
+        <form action="options.php" method="POST">
+            <?php
+                settings_fields( 'ljs_plugin_options' );
+                do_settings_sections( 'ljs_plugin_options' );
+                submit_button();
+            ?>
+        </form>
+    </div>
+    <?php
+}
 
 // initialize the settings upon call via hook
 function ljs_settings_init (){
+    register_setting( 'ljs_plugin_options', 'ljs_plugin_options', 'sanitize_callback' );
+
     // register settings as, well, SETTINGS for the wp settings API
     add_settings_section(
-        'ljs_options_group_modules', // custom slug/id
-        __( 'Custom settings', 'my-textdomain' ), //title
-        'ljs_setting_section_callback_function',
-        'sample-page'
+        'ljs_section_features', // custom slug/id
+        __( 'Custom features', 'my-textdomain' ), //title
+        'ljs_setting_section_callback',
+        'ljs_plugin_options'
     );
 
-    add_option( 'ljs_deactivate_comments', 'true');
-    register_setting( 'ljs_options_group', 'ljs_deactivate_comments', 'ljs_setting_section_callback_function' );
-    
-    add_option( 'ljs_add_custom_post_type', 'true');
-    register_setting( 'ljs_options_group', 'ljs_add_custom_post_type', 'ljs_setting_section_callback_function' );
-
-    // place content in settings page
     add_settings_field(
-        'ljs_setting_field', // id/slug of the setting which is used to call its valu later
-        __( 'My custom setting field', 'my-textdomain' ),
-        'ljs_setting_markup',
-        'sample-page',
-        'ljs_options_group_modules'
+        'ljs_deactivate_comments', // id/slug of the setting which is used to call its valu later
+        __( 'Deactivate comments', 'text_domain' ),
+        'feature_comments_render', // function called
+        'ljs_plugin_options', // the setting group id
+        'ljs_section_features' // section it belongs to
     );
 
-    register_setting( 'sample-page', 'ljs_custom_settings_options' );
+    add_settings_field(
+        'ljs_admin_color_scheme',
+        __( 'Admin color scheme', 'text_domain' ),
+        'feature_color_scheme_render',
+        'ljs_plugin_options',
+        'ljs_section_features'
+    );
+
+    add_settings_field(
+        'ljs_feature_beschlusz',
+        __( 'Recipe post type', 'text_domain' ),
+        'feature_recipe_post_type_render',
+        'ljs_plugin_options',
+        'ljs_section_features'
+    );
 }
 
 // construct the settings page
@@ -46,23 +68,47 @@ function ljs_configuration_page_contents() {
     <h1> <?php esc_html_e( 'LJS Tools Konfigurieren', 'my-plugin-textdomain' ); ?> </h1>
     <form method="POST" action="options.php">
     <?php
-    settings_fields( 'sample-page' );
-    do_settings_sections( 'sample-page' );
+    settings_fields( 'ljs_plugin_options' );
+    do_settings_sections( 'ljs_plugin_options' );
     submit_button();
     ?>
     </form>
     <?php
 }
 
-// define contents of the settings page
-function ljs_setting_markup() {
+// render contents of the settings page
+function feature_comments_render() {
+    $options = get_option( 'ljs_deactivate_comments' );
     ?>
-    <label for="ljs_setting_field"><?php _e( 'My Input', 'my-textdomain' ); ?></label>
-    <input type="text" id="ljs_setting_field" name="ljs_setting_field">
+    <input type="checkbox" name="ljs_plugin_options[ljs_deactivate_comments]" <?php checked( $options['ljs_deactivate_comments'], 1 ); ?> value="1">
+    <?php
+}
+
+function feature_color_scheme_render() {
+    $options = get_option( 'ljs_admin_color_scheme' );
+    ?>
+    <input type="checkbox" name="ljs_plugin_options[ljs_admin_color_scheme]" <?php checked( $options['ljs_admin_color_scheme'], 1 ); ?> value="1">
+    <?php
+}
+
+function feature_recipe_post_type_render() {
+    $options = get_option( 'ljs_feature_beschlusz' );
+    ?>
+    <input type="checkbox" name="ljs_plugin_options[ljs_feature_beschlusz]" <?php checked( $options['ljs_feature_beschlusz'], 1 ); ?> value="1">
     <?php
 }
 
 // called from within the settings section
-function ljs_setting_section_callback_function() {
-    echo '<p>Intro text for our settings section</p>';
+function ljs_setting_section_callback() {
+    echo '<p>Turn individual features on or off below:</p>';
+}
+
+function sanitize_callback( $options ) {
+    if ( ! isset( $options['feature_comments'] ) ) {
+        $options['feature_comments'] = 0;
+    }
+    if ( ! isset( $options['feature_comments'] ) ) {
+        $options['feature_comments'] = 0;
+    }
+    return $options;
 }
