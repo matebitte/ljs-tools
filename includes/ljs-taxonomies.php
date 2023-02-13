@@ -107,4 +107,4 @@ function ljs_add_taxonomy_gremium()
 	register_taxonomy('sitzung', array('beschlusz'), $args);
 }
 
-// 2023 thalia leo weigel
+// 2023 emilia leo weigel

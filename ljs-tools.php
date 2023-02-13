@@ -11,7 +11,7 @@
  * Plugin URI:        https://github.com/matebitte/ljs_tools
  * Description:       Fügt post types für Beschlüsse sowie pasende Tags/Kategorien hinzu. Deaktiviert Kommentare. Für updates @bak_it@ljs.social folgen :)
  * Version:           1.0.0
- * Author:            Thalia Leo Weigel
+ * Author:            Emilia Leo Weigel
  * Author URI:        https://decided.to
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
@@ -43,7 +43,7 @@ include "admin/ljs-settings.php";
 if (get_option( 'ljs_deactivate_comments' ) == true) {
     // disable comments
     add_action("wp_before__render", "ljs_remove_admin_bar_render");
-    add_action("init", "ljs_remove_comment_support", 25);
+    add_action("init", "ljs_remove_comment_support");
     add_action("admin_menu", "ljs_remove_comments_admin_menus");
 }
 
@@ -115,4 +115,4 @@ register_activation_hook(__FILE__, 'activate_ljs_tools');
 register_deactivation_hook(__FILE__, 'deactivate_ljs_tools');
 register_uninstall_hook(__FILE__, 'uninstall_ljs_tools');
 
-// 2023 thalia leo weigel
+// 2023 emilia leo weigel

@@ -20,4 +20,4 @@ function ljs_remove_admin_bar_render()
     $wp_admin_bar->remove_menu("comments");
 }
 
-// 2023 thalia leo weigel
+// 2023 emilia leo weigel

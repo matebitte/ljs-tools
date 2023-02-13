@@ -23,4 +23,4 @@ function ljs_add_post_type_beschlusz()
     );
 }
 
-// 2023 thalia leo weigel
+// 2023 emilia leo weigel
